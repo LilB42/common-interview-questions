@@ -1,0 +1,102 @@
+// scripts.js
+
+// Array of common interview questions
+const questions = [
+    "Tell me about yourself.",
+    "Why do you want to work for this company?",
+    "What are your strengths?",
+    "What are your weaknesses?",
+    "Where do you see yourself in 5 years?",
+    "Why should we hire you?",
+    "Tell me about a time you faced a challenge at work and how you handled it.",
+    "How do you prioritize your tasks?",
+    "What motivates you?",
+    "Why did you leave your last job?"
+];
+
+// Shuffle the questions to randomize their order
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
+}
+shuffleArray(questions); // Randomize the order of the questions
+
+// Variables to track the game state
+let currentQuestionIndex = 0;
+let answers = []; // Store answers
+let currentAnswer = '';
+
+// Function to load a new question
+function loadQuestion() {
+    // Show the question
+    document.getElementById("question-text").textContent = questions[currentQuestionIndex];
+    document.getElementById("answer-input").value = "";  // Clear previous answer
+    document.getElementById("feedback-container").style.display = "none";  // Hide feedback section
+    document.getElementById("question-container").style.display = "block";  // Show question
+    
+    // Update the progress bar and text
+    document.getElementById("progress-bar").value = currentQuestionIndex + 1;
+    document.getElementById("progress-text").textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+}
+
+// Function to handle the user's answer
+document.getElementById("submit-answer").addEventListener("click", function () {
+    currentAnswer = document.getElementById("answer-input").value.trim();
+    
+    // If no answer is provided, alert the user
+    if (currentAnswer === "") {
+        alert("Please type an answer!");
+        return;
+    }
+
+    // Store the answer
+    answers[currentQuestionIndex] = currentAnswer;
+
+    // Hide the question and show feedback
+    document.getElementById("question-container").style.display = "none";
+    document.getElementById("feedback-container").style.display = "block";
+
+    // Provide feedback based on the answer length and content
+    let feedback = "";
+    
+    // Simple feedback logic based on the answer length and content
+    if (currentAnswer.length > 50) {
+        feedback = "Good answer! You're providing enough detail.";
+    } else {
+        feedback = "Try adding more detail to your answer!";
+    }
+
+    // Show the feedback
+    document.getElementById("feedback-text").textContent = feedback;
+});
+
+// Function to load the next question or show the results
+document.getElementById("next-question").addEventListener("click", function () {
+    currentQuestionIndex++;
+
+    // If there are more questions, load the next one
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        // End the game and show a message
+        showFinalReview();
+    }
+});
+
+// Show the final review of answers
+function showFinalReview() {
+    let finalReviewHtml = "<h1>Final Review</h1><p>Here are the answers you provided:</p><ul>";
+    
+    for (let i = 0; i < questions.length; i++) {
+        finalReviewHtml += `<li><strong>Question ${i + 1}:</strong> ${questions[i]}</li><p>${answers[i]}</p><hr>`;
+    }
+
+    finalReviewHtml += "</ul><p>Great job on completing the interview practice game! Best of luck with your interview preparation!</p>";
+    
+    document.getElementById("game-container").innerHTML = finalReviewHtml;
+}
+
+// Load the first question when the game starts
+loadQuestion();
